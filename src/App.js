@@ -1,25 +1,47 @@
-import logo from './logo.svg';
-import './App.css';
+const { useState, useEffect } = require("react");
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const [tasks, setTasks] = useState(JSON.parse(localStorage.getItem('yourTasks')) || []);
+
+
+const newTask = (name) => {
+  setTasks([...tasks, {id: Math.random(), nameTask: name, done: false}]);
 }
 
-export default App;
+const checked = (id) => {
+  const changeDone = tasks.map((info) => {
+    if (info.id === id){
+      return {...info, done: !info.done};
+    }
+    return info;
+  })
+  setTasks(changeDone);
+}
+
+const [value, setValue] = useState('one');
+const handleChange = (e, newEvent) => {
+  setValue(newEvent);
+}
+
+const changeScreen = () => {
+  switch(value){
+    case 'two':
+      return <Active/>
+    case 'three':
+      return <Completed/>
+    default:
+      return <All/>
+  }
+}
+
+
+const removeTask = (id) => {
+  setTasks(tasks.filter((info) => info.id !== id));
+}
+
+const removeAllTasks = () => {
+  setTasks(tasks.filter((info) => !info.done));
+}
+
+useEffect(() => {
+  localStorage.setItem('yourTasks', JSON.stringify(tasks));
+}, [tasks])
